@@ -14,10 +14,21 @@ import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
-
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 
 @Module({
-  imports: [AuthorsModule, BooksModule, UsersModule, AuthModule, PrismaModule],
+  imports: [
+    AuthorsModule,
+    BooksModule,
+    UsersModule,
+    AuthModule,
+    PrismaModule,
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+    }),
+  ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
 })
