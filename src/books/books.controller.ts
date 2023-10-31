@@ -13,6 +13,7 @@ import { BooksService } from './books.service';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { CreateBooksDTO } from './dtos/create-books-dto';
 import { UpdateBooksDTO } from './dtos/update-books-dto';
+import { FavoriteBookDTO } from './dtos/favorite.book.dto';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 
 @Controller('books')
@@ -57,5 +58,11 @@ export class BooksController {
             throw new NotFoundException('Book not found');
         await this.booksService.deleteById(id);
         return { success: true };
+    }
+
+    @Post('/like')
+    @UseGuards(JwtAuthGuard)
+    likedBook(@Body() likeBook: FavoriteBookDTO) {
+        return this.booksService.likedBook(likeBook);
     }
 }

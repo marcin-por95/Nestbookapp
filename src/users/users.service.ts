@@ -7,7 +7,15 @@ export class UsersService {
     constructor(private prismaService: PrismaService) {}
 
     public getAll(): Promise<User[]> {
-        return this.prismaService.user.findMany({});
+        return this.prismaService.user.findMany({
+            include: {
+                books: {
+                    include: {
+                        book: true,
+                    },
+                },
+            },
+        });
     }
 
     public getById(id: User['id']): Promise<User | null> {
@@ -66,12 +74,10 @@ export class UsersService {
                     },
                 });
             }
-            if (password == undefined) {
-                return await this.prismaService.user.update({
-                    where: { id },
-                    data: userData,
-                });
-            }
+            return await this.prismaService.user.update({
+                where: {id},
+                data: userData,
+            });
         } catch (error) {
             if (error.code === 'P2002')
                 throw new ConflictException('The email is already taken');
